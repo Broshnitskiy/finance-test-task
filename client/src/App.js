@@ -1,25 +1,45 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
+import io from 'socket.io-client';
 import './App.css';
 
-function App() {
+const socket = io('http://localhost:4000');
+
+export function App() {
+  const [quotes, setQuotes] = useState([]);
+  console.log(quotes);
+
+  const handleDisconect = () => {
+    socket.disconnect();
+  };
+
+  useEffect(() => {
+    if (!socket) {
+      return;
+    }
+
+    socket.emit('start');
+
+    socket.on('ticker', newQuotes => {
+      setQuotes(newQuotes);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {quotes.map(quote => (
+        <div key={quote.ticker}>
+          <p>Ticker: {quote.ticker}</p>
+          <p>Price: {quote.price}</p>
+          <p>Change: {quote.change}</p>
+        </div>
+      ))}
+      <button type="button" onClick={handleDisconect}>
+        Stop conection
+      </button>
     </div>
   );
 }
-
-export default App;
