@@ -15,7 +15,7 @@ export function App() {
   const tickersData = useSelector(getTickersData);
   const isConnected = useSelector(getIsConnected);
 
-  const handleconnect = () => {
+  const handleConnect = () => {
     dispatch(fetchTickers());
   };
   const handleDisconnect = () => {
@@ -42,7 +42,7 @@ export function App() {
       <button type="button" onClick={handleDisconnect} disabled={!isConnected}>
         Stop conection
       </button>
-      <button type="button" onClick={handleconnect} disabled={isConnected}>
+      <button type="button" onClick={handleConnect} disabled={isConnected}>
         Start conection
       </button>
     </div>

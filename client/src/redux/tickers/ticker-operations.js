@@ -1,18 +1,21 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:4000');
+const PORT = 4000;
+const HOST = `http://localhost:${PORT}`;
+
+let socket;
 
 export const fetchTickers = createAsyncThunk(
   'tickers/fetch',
   async (_, { getState, dispatch, rejectWithValue }) => {
     const store = getState();
+    if (store.ticker.isConnected) {
+      return;
+    }
+    socket = io(HOST);
     try {
-      if (!store.ticker.isConnected) {
-        socket.connect();
-      }
       socket.emit('start');
-
       socket.on('ticker', data => {
         dispatch(updateTickers(data));
       });
