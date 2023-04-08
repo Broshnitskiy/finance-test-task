@@ -1,44 +1,49 @@
-import { useEffect, useState } from 'react';
-import io from 'socket.io-client';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  getTickersData,
+  getIsConnected,
+} from './redux/tickers/ticker-selectors';
+import {
+  fetchTickers,
+  stopConnection,
+} from './redux/tickers/ticker-operations';
 import './App.css';
 
-const socket = io('http://localhost:4000');
-
 export function App() {
-  const [quotes, setQuotes] = useState([]);
-  console.log(quotes);
+  const dispatch = useDispatch();
+  const tickersData = useSelector(getTickersData);
+  const isConnected = useSelector(getIsConnected);
 
-  const handleDisconect = () => {
-    socket.disconnect();
+  const handleconnect = () => {
+    dispatch(fetchTickers());
+  };
+  const handleDisconnect = () => {
+    dispatch(stopConnection());
   };
 
   useEffect(() => {
-    if (!socket) {
-      return;
-    }
-
-    socket.emit('start');
-
-    socket.on('ticker', newQuotes => {
-      setQuotes(newQuotes);
-    });
-
+    dispatch(fetchTickers());
     return () => {
-      socket.disconnect();
+      dispatch(stopConnection());
     };
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="App">
-      {quotes.map(quote => (
-        <div key={quote.ticker}>
-          <p>Ticker: {quote.ticker}</p>
-          <p>Price: {quote.price}</p>
-          <p>Change: {quote.change}</p>
-        </div>
-      ))}
-      <button type="button" onClick={handleDisconect}>
+      {tickersData &&
+        tickersData.map(quote => (
+          <div key={quote.ticker}>
+            <p>Ticker: {quote.ticker}</p>
+            <p>Price: {quote.price}</p>
+            <p>Change: {quote.change}</p>
+          </div>
+        ))}
+      <button type="button" onClick={handleDisconnect} disabled={!isConnected}>
         Stop conection
+      </button>
+      <button type="button" onClick={handleconnect} disabled={isConnected}>
+        Start conection
       </button>
     </div>
   );
