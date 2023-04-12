@@ -7,6 +7,7 @@ import {
 
 const initialState = {
   tickerData: null,
+  currentTicker: null,
   isConnected: false,
   error: null,
 };
@@ -14,6 +15,11 @@ const initialState = {
 const tickerSlice = createSlice({
   name: 'ticker',
   initialState,
+  reducers: {
+    selectedTicker: (state, action) => {
+      state.currentTicker = action.payload;
+    },
+  },
   extraReducers: {
     [fetchTickers.fulfilled](state) {
       state.isConnected = true;
@@ -36,5 +42,7 @@ const tickerSlice = createSlice({
     },
   },
 });
+
+export const { selectedTicker } = tickerSlice.actions;
 
 export default tickerSlice.reducer;
