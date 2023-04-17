@@ -6,7 +6,7 @@ import {
 } from './ticker-operations';
 
 const initialState = {
-  tickerData: null,
+  tickerData: [],
   currentTicker: null,
   isConnected: false,
   error: null,

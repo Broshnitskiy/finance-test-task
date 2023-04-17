@@ -3,8 +3,8 @@ import { useDispatch } from 'react-redux';
 import {
   fetchTickers,
   stopConnection,
-} from './redux/tickers/ticker-operations';
-import Dashboard from './components/dashboard/Dashboard';
+} from '../redux/tickers/ticker-operations';
+import Dashboard from './dashboard/Dashboard';
 
 export function App() {
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ export function App() {
   }, [dispatch]);
 
   return (
-    <div className="App">
+    <div data-testid="app">
       <Dashboard />
     </div>
   );
